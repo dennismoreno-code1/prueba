@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Librería Interactiva</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --bg: #f8f9fa;
+            --text: #333;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .search-container {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 20px;
+            width: 300px;
+            font-size: 1rem;
+        }
+
+        .filter-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .book-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-cover {
+            height: 200px;
+            background: #eaeaea;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .book-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .book-author {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 1rem;
+        }
+
+        .book-price {
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .add-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .add-btn:hover {
+            background-color: var(--accent);
+        }
+
+        .cart {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            align-self: start;
+        }
+
+        .cart h3 {
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 0.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .cart-total {
+            margin-top: 1.5rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-top: 2px solid var(--bg);
+            padding-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Mi Librería Escolar</h1>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Buscar por título o autor...">
+            <button class="filter-btn active" onclick="filterCategory('todos')">Todos</button>
+            <button class="filter-btn" onclick="filterCategory('Ficción')">Ficción</button>
+            <button class="filter-btn" onclick="filterCategory('Ciencia')">Ciencia</button>
+            <button class="filter-btn" onclick="filterCategory('Desarrollo')">Desarrollo</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <main class="book-grid" id="book-grid">
+            <!-- Los libros se cargarán dinámicamente con JS -->
+        </main>
+
+        <aside class="cart">
+            <h3>Mi Carrito</h3>
+            <div id="cart-items">
+                <!-- Ítems del carrito -->
+            </div>
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Comprar Ahora</button>
+        </aside>
+    </div>
+
+    <script>
+        // Datos de los libros
+        const books = [
+            { id: 1, title: "Cien Años de Soledad", author: "Gabriel García Márquez", price: 15.99, category: "Ficción" },
+            { id: 2, title: "Breve Historia del Tiempo", author: "Stephen Hawking", price: 18.50, category: "Ciencia" },
+            { id: 3, title: "Hábitos Atómicos", author: "James Clear", price: 16.00, category: "Desarrollo" },
+            { id: 4, title: "Don Quijote de la Mancha", author: "Miguel de Cervantes", price: 12.00, category: "Ficción" },
+            { id: 5, title: "El Gen Egoísta", author: "Richard Dawkins", price: 22.10, category: "Ciencia" },
+            { id: 6, title: "Piense y Hágase Rico", author: "Napoleon Hill", price: 14.99, category: "Desarrollo" }
+        ];
+
+        let cart = [];
+        let currentCategory = 'todos';
+
+        // Renderizar catálogo
+        function displayBooks(booksToRender) {
+            const grid = document.getElementById('book-grid');
+            grid.innerHTML = '';
+
+            booksToRender.forEach(book => {
+                grid.innerHTML += `
+                    <div class="book-card">
+                        <div>
+                            <div class="book-cover">${book.title}</div>
+                            <h3 class="book-title">${book.title}</h3>
+                            <p class="book-author">${book.author}</p>
+                        </div>
+                        <div>
+                            <p class="book-price">$${book.price.toFixed(2)}</p>
+                            <button class="add-btn" onclick="addToCart(${book.id})">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Buscador
+        document.getElementById('search').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = books.filter(book => 
+                (book.title.toLowerCase().includes(term) || book.author.toLowerCase().includes(term)) &&
+                (currentCategory === 'todos' || book.category === currentCategory)
+            );
+            displayBooks(filtered);
+        });
+
+        // Filtrado por categoría
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // Actualizar estado visual de los botones
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.textContent.includes(category) || (category === 'todos' && btn.textContent === 'Todos')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const filtered = category === 'todos' ? books : books.filter(b => b.category === category);
+            displayBooks(filtered);
+        }
+
+        // Funciones del Carrito
+        function addToCart(id) {
+            const book = books.find(b => b.id === id);
+            const cartItem = cart.find(item => item.id === id);
+
+            if (cartItem) {
+                cartItem.quantity++;
+            } else {
+                cart.push({ ...book, quantity: 1 });
+            }
+            updateCart();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartContainer = document.getElementById('cart-items');
+            const totalContainer = document.getElementById('cart-total-price');
+            cartContainer.innerHTML = '';
+            
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p style="color: #888; text-align: center;">El carrito está vacío</p>';
+            }
+
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                cartContainer.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.title}</strong><br>
+                            <small>$${item.price.toFixed(2)} x ${item.quantity}</small>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" style="background: none; border: none; color: #e74c3c; cursor: pointer; font-weight: bold;">✕</button>
+                    </div>
+                `;
+            });
+
+            totalContainer.textContent = `$${total.toFixed(2)}`;
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("¡Tu carrito está vacío!");
+                return;
+            }
+            alert("¡Gracias por tu compra simulada!");
+            cart = [];
+            updateCart();
+        }
+
+        // Inicializar app
+        displayBooks(books);
+        updateCart();
+    </script>
+</body>
+</html>
